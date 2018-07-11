@@ -4,23 +4,13 @@
 require 'fabric8'
 require 'getoptlong'
 
-=begin
-opts = GetoptLong.new(
-  [ '--input', GetoptLong::REQUIRED_ARGUMENT ],
-  [ '--output', GetoptLong::REQUIRED_ARGUMENT ],
-  [ '--verbose', GetoptLong::NO_ARGUMENT ]
-)
-
-opts.each(&method(:p))
-
-exit
-=end
-
 # TODO: Needs to be better, maybe load from ~\fabric8\tools or something
 tools = [
   Fabric8::Tool.new('.\tools\test.rb'),
   Fabric8::Tool.new('.\tools\gem.rb')
 ]
+
+# TODO: This doesn't support fb8 [tool] [input] [output] shorthand
 
 # Display message when running just fb8; this should run Fabric8file later
 if ARGV.length == 0 
