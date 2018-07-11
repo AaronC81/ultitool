@@ -6,7 +6,19 @@ module Fabric8
   # Provides methods for outputting log text in a consistent manner.
   module Output
     def output_ok(text)
-      puts output_with_header('[OK  ] '.green, text)
+      output_with_header('[OK  ] '.green, text)
+    end
+
+    def output_error(text)
+      output_with_header('[ERR ] '.red, text)
+    end
+
+    def output_warn(text)
+      output_with_header('[WARN] '.yellow, text)
+    end
+
+    def output_info(text)
+      output_with_header('[INFO] '.white, text)
     end
 
     private
@@ -21,5 +33,8 @@ module Fabric8
 
       puts "#{header}#{processed_text}"
     end
+
+    module_function :output_ok, :output_error, :output_warn, :output_info,
+      :output_with_header
   end
 end

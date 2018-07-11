@@ -1,9 +1,16 @@
 # frozen_string_literal: true
 
-def name
-  :test
-end
+info :name, 'test'
+info :description, 'A test tool.'
 
-def build(*)
-  output_ok "Foo!\nBar!\nBaz!"
+option 'one-line'
+
+def build(opts)
+  if opts['one-line']
+    output_ok "Foo! Bar! Baz!"
+  else
+    output_ok "Foo!\nBar!\nBaz!"
+  end
+
+  true
 end

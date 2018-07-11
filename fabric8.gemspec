@@ -10,8 +10,7 @@ Gem::Specification.new do |s|
   s.files         = Dir.glob('src/**/*')
   s.license       = 'MIT'
   s.require_paths = %w[src]
-  s.executables   = 'fabric8'
+  s.executables   = 'fb8'
 
   s.add_runtime_dependency 'colorize', '~> 0.8', '>= 0.8'
-  s.add_runtime_dependency 'commander', '~> 4.4', '>= 4.4'
 end

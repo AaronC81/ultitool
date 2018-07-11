@@ -1,0 +1,63 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'fabric8'
+require 'getoptlong'
+
+=begin
+opts = GetoptLong.new(
+  [ '--input', GetoptLong::REQUIRED_ARGUMENT ],
+  [ '--output', GetoptLong::REQUIRED_ARGUMENT ],
+  [ '--verbose', GetoptLong::NO_ARGUMENT ]
+)
+
+opts.each(&method(:p))
+
+exit
+=end
+
+# TODO: Needs to be better, maybe load from ~\fabric8\tools or something
+tools = [
+  Fabric8::Tool.new('.\tools\test.rb'),
+  Fabric8::Tool.new('.\tools\gem.rb')
+]
+
+# Display message when running just fb8; this should run Fabric8file later
+if ARGV.length == 0 
+  puts 'Fabric8'
+  puts 'Run fb8 <tool> to use a tool.'
+  exit 0
+end
+
+# Check that a tool is the first thing specified
+if ARGV[0].start_with? '-'
+  Fabric8::Output.output_error('Please specify a tool to use.')
+  exit 1
+end
+
+desired_tool_name = ARGV[0]
+
+tools.each do |tool|
+  next unless tool.info[:name] == desired_tool_name
+
+  Fabric8::Output.output_info("Found tool '#{tool.info[:name]}'.")
+
+  # Parse options based on what the tool wants
+  getoptlong_config = tool.accepted_options.map do |k, v|
+    ["--#{k}", v ? GetoptLong::REQUIRED_ARGUMENT : GetoptLong::NO_ARGUMENT]
+  end
+  getoptlong = GetoptLong.new(*getoptlong_config)
+
+  options = {}
+  getoptlong.each do |k, v|
+    options[k.sub("-", "").sub("-", "")] = v
+  end
+
+  tool.interactive_build(options)
+
+  exit 0
+end
+
+Fabric8::Output.output_error(
+  "Unable to find the tool '#{desired_tool_name}'."
+)
