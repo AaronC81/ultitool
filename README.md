@@ -14,6 +14,9 @@ tools:
   sass: .\sass .\gen\css
 ```
 
+All that's required to build or watch from this is `fb8` or `fb8 --watch` in
+the command line.
+
 If another developer is missing any of these tools, Fabric8 can install the 
 tools for them, supporting a wide range of package managers.
 
