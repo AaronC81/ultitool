@@ -4,11 +4,9 @@
 require 'fabric8'
 require 'getoptlong'
 
-# TODO: Needs to be better, maybe load from ~\fabric8\tools or something
-tools = [
-  Fabric8::Tool.new('.\tools\test.rb'),
-  Fabric8::Tool.new('.\tools\gem.rb')
-]
+tools = Dir.glob("#{Dir.home}/fabric8/tools/*").map do |x|
+  Fabric8::Tool.new(x)
+end
 
 # TODO: This doesn't support fb8 [tool] [input] [output] shorthand
 
