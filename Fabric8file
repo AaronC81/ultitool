@@ -1,0 +1,5 @@
+tools:
+  gem:
+    - auto-output
+    - install
+    - input: fabric8.gemspec

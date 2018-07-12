@@ -4,16 +4,37 @@
 require 'fabric8'
 require 'getoptlong'
 
-tools = Dir.glob("#{Dir.home}/fabric8/tools/*").map do |x|
-  Fabric8::Tool.new(x)
-end
-
 # TODO: This doesn't support fb8 [tool] [input] [output] shorthand
 
-# Display message when running just fb8; this should run Fabric8file later
+# TODO: This needs to be tweaked for fb8's flags, e.g. fb8 --watch, because
+#       then ARGV.length > 1 but no tool specified
 if ARGV.length == 0 
-  puts 'Fabric8'
-  puts 'Run fb8 <tool> to use a tool.'
+  unless File.exist? "./Fabric8file"
+    Fabric8::Output.output_error(
+      'There is no Fabric8file in the current directory.'
+    )
+    exit 1
+  end
+
+  config_file = File.read("./Fabric8file")
+
+  begin
+    tools_and_opts = Fabric8::FileLoader.parse_config(config_file)
+  rescue => e
+    Fabric8::Output.output_error(
+      "Fabric8file error: #{e.message.sub("uncaught throw ", "")}"
+    )
+    exit 1
+  end
+
+  tools_and_opts.each do |tool_and_opts|
+    tool, opts = tool_and_opts
+
+    tool.interactive_build(opts)
+  end
+
+  Fabric8::Output.output_ok('All tools completed successfully.')
+
   exit 0
 end
 
@@ -25,27 +46,28 @@ end
 
 desired_tool_name = ARGV[0]
 
-tools.each do |tool|
-  next unless tool.info[:name] == desired_tool_name
+tool = Fabric8::ToolLoader.find_tool(desired_tool_name)
 
-  Fabric8::Output.output_info("Found tool '#{tool.info[:name]}'.")
-
-  # Parse options based on what the tool wants
-  getoptlong_config = tool.accepted_options.map do |k, v|
-    ["--#{k}", v ? GetoptLong::REQUIRED_ARGUMENT : GetoptLong::NO_ARGUMENT]
-  end
-  getoptlong = GetoptLong.new(*getoptlong_config)
-
-  options = {}
-  getoptlong.each do |k, v|
-    options[k.sub("-", "").sub("-", "")] = v
-  end
-
-  tool.interactive_build(options)
-
-  exit 0
+if tool == nil
+  Fabric8::Output.output_error(
+    "Unable to find the tool '#{desired_tool_name}'."
+  )
+  exit 1
 end
 
-Fabric8::Output.output_error(
-  "Unable to find the tool '#{desired_tool_name}'."
-)
+Fabric8::Output.output_info("Found tool '#{tool.info[:name]}'.")
+
+# Parse options based on what the tool wants
+getoptlong_config = tool.accepted_options.map do |k, v|
+  ["--#{k}", v ? GetoptLong::REQUIRED_ARGUMENT : GetoptLong::NO_ARGUMENT]
+end
+getoptlong = GetoptLong.new(*getoptlong_config)
+
+options = {}
+getoptlong.each do |k, v|
+  options[k.sub("-", "").sub("-", "")] = v
+end
+
+tool.interactive_build(options)
+
+exit 0
