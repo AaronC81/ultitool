@@ -38,10 +38,6 @@ module Fabric8
           raise ArgumentError, "#{opt.name} expects an argument"
         end
 
-        if opt_def.flag
-
-        end
-
         # Push this option
         @hash[opt.name] = opt.value
       end
