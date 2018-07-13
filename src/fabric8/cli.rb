@@ -67,8 +67,14 @@ module Fabric8
 
       option_set = OptionSet.new(task.options, tool)
 
-      ToolDslContext.new(tool, option_set).build_handler.()
+      result = ToolDslContext.new(tool, option_set).build_handler.()
       Output.out :info, "---  End #{tool.name}  ---"
+
+      if result == true
+        Output.out :ok, "#{tool.name} completed with success."
+      else
+        Output.out :error, "#{tool.name} failed."
+      end
     end
   end
 end
