@@ -4,22 +4,27 @@ require 'fabric8/output'
 require 'fabric8/tool'
 require 'fabric8/tool_dsl_context'
 require 'fabric8/option_set'
+require 'fabric8/fabric8file'
 
 module Fabric8
   # The command-line interface for Fabric8.
   class Cli
-    attr_accessor :option_set, :tool
+    attr_accessor :tasks
 
     # Parses the arguments to create a new Cli instance.
     def initialize(args)
       # Get the tool name, and check it's actually a tool
       tool_name = args.shift
-      if tool_name.nil? || tool_name.start_with?('-') 
+      if tool_name.nil?
+        # Load the Fabric8file
+        @tasks = Fabric8file.new.tasks
+        return
+      elsif tool_name.start_with?('-') 
         raise ArgumentError, 'Must specify a tool'
       end
 
       # Load the tool
-      @tool = Tool.new(tool_name)
+      tool = Tool.new(tool_name)
     
       # Parse options
       options = []
@@ -51,15 +56,19 @@ module Fabric8
         current_option = nil # Only one value is allowed per option
       end
 
-      # Form an OptionSet from the parsed options
-      @option_set = OptionSet.new(options, tool)
+      # Add this as the only task
+      @tasks = [Task.new(tool, options)]
     end
 
-    # Runs the 'build' task of the given tool.
-    def run_build
-      Output.out :info, "--- Begin #{@tool.name} ---"
-      ToolDslContext.new(@tool, @option_set).build_handler.()
-      Output.out :info, "---  End #{@tool.name}  ---"
+    # Runs the 'build' task of the given task.
+    def run_build(task)
+      tool = task.tool
+      Output.out :info, "--- Begin #{tool.name} ---"
+
+      option_set = OptionSet.new(task.options, tool)
+
+      ToolDslContext.new(tool, option_set).build_handler.()
+      Output.out :info, "---  End #{tool.name}  ---"
     end
   end
 end

@@ -4,7 +4,8 @@
 require 'fabric8'
 
 begin
-  Fabric8::Cli.new(ARGV).run_build
+  cli = Fabric8::Cli.new(ARGV)
+  cli.tasks.each { |task| cli.run_build(task) }
 rescue => e
-  Fabric8::Output.out :error, e.message
+  Fabric8::Output.out :error, "#{e.message}\n#{e.backtrace.join("\n")}"
 end
