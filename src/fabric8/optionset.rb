@@ -15,9 +15,48 @@ module Fabric8
 
   # A set of options with defaults for a tool.
   class OptionSet
+    attr_reader :hash
+
     # Create a new OptionSet from an array of Option objects and a Tool.
     def initialize(options, tool)
+      @tool = tool
+      @hash = {}
 
-    end    
+      options.each do |opt|
+        # Find this option's definition
+        opt_def = tool.option_definition(opt.name)
+        raise ArgumentError, "Invalid option #{opt.name}" if opt_def.nil?
+
+        # Check that there's an argument if it's not a flag, and vice versa
+        if opt_def.flag
+          raise ArgumentError,
+            "#{opt.name} does not expect an argument" if !opt.value.nil?
+
+          # Flags will be nil, so set their value to true instead
+          opt.value = true
+        elsif !opt_def.flag && opt.value.nil?
+          raise ArgumentError, "#{opt.name} expects an argument"
+        end
+
+        if opt_def.flag
+
+        end
+
+        # Push this option
+        @hash[opt.name] = opt.value
+      end
+    end
+
+    # Retrieve an option by name, falling back to default if required.
+    def get(name)
+      return @hash[name] unless @hash[name].nil?
+
+      # Value unspecified - look for defaults
+      opt_def = @tool.option_definition(name)
+      return false if opt_def.flag
+
+      @tool.option_definition(name)&.default ||
+        raise(KeyError, "No such option #{name}")
+    end
   end
 end

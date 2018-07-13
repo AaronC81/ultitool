@@ -52,7 +52,12 @@ module Fabric8
       end
 
       # Form an OptionSet from the parsed options
-      @option_set = OptionSet.new()
+      @option_set = OptionSet.new(options, tool)
+    end
+
+    # Runs the 'build' task of the given tool.
+    def run_build
+      ToolDslContext.new(@tool, @option_set).build_handler.()
     end
   end
 end

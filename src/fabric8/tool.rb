@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'yaml'
+require 'fabric8/optionset'
 
 module Fabric8
   # Represents a Fabric8 tool.
@@ -29,11 +30,13 @@ module Fabric8
         raise IOError,
           "#{tool_name}'s metadata.yaml doesn't exist or is not valid YAML"
       end
+
+      # Validate options
+      option_definitions
     end
 
     # Loads the main script for this tool.
     def load_script
-      puts "#{Tool.path_for_tool(name)}/main.rb"
       begin
         File.read("#{Tool.path_for_tool(name)}/main.rb")
       rescue
@@ -57,5 +60,52 @@ module Fabric8
 
     # Gets the version of this tool.
     def version; get_metadata_item('version'); end
+
+    # Gets the option definitions for this tool.
+    def option_definitions
+      begin
+        opts = get_metadata_item('options')
+      rescue
+        # There aren't any options
+        return []
+      end 
+
+      defs = []
+      opts.each do |name, config|
+        config ||= {}
+
+        this_def = OptionDef.new(
+          name,
+          config['flag'],
+          config['default']
+        )
+
+        # If not specified, assume not a flag
+        this_def.flag = false if this_def.flag.nil?
+
+        # Check defaults are supplied where they need to be
+        if !this_def.flag && this_def.default.nil?
+          raise KeyError, "Option #{name} isn't given a default"
+        elsif this_def.flag && !this_def.default.nil?
+          raise KeyError,
+            "Flag options cannot have defaults, but #{name} has a default"
+        end
+
+        defs << this_def
+      end
+
+      defs
+    end
+
+    # Gets an option definition by name for this tool, or nil if not found.
+    def option_definition(name)
+      option_definitions.each do |this_def|
+        if name == this_def.name
+          return this_def
+        end
+      end
+
+      nil
+    end
   end
 end
