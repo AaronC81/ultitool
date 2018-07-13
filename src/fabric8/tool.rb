@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'yaml'
-require 'fabric8/optionset'
+require 'fabric8/option_set'
 
 module Fabric8
   # Represents a Fabric8 tool.

@@ -3,7 +3,7 @@
 require 'fabric8/output'
 require 'fabric8/tool'
 require 'fabric8/tool_dsl_context'
-require 'fabric8/optionset'
+require 'fabric8/option_set'
 
 module Fabric8
   # The command-line interface for Fabric8.
@@ -57,7 +57,9 @@ module Fabric8
 
     # Runs the 'build' task of the given tool.
     def run_build
+      Output.out :info, "--- Begin #{@tool.name} ---"
       ToolDslContext.new(@tool, @option_set).build_handler.()
+      Output.out :info, "---  End #{@tool.name}  ---"
     end
   end
 end
