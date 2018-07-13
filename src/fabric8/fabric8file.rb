@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'yaml'
+require 'shellwords'
 require 'fabric8/option_set'
 
 module Fabric8
@@ -49,22 +50,37 @@ module Fabric8
           "Fabric8file doesn't exist or is not valid YAML"
       end
 
-      # Figure out all tasks in the YAML file, a task being a
-      # tool-and-options bundle.
+      # Process all tasks in the YAML file.
       throw "No 'tools' top-level key" unless content.include?('tools')
       tools = content['tools']
 
       @tasks = []
+      # TODO: 
       tools.each do |tool_name, opts|
         new_task = Task.new(Tool.new(tool_name), [])
-        opts.each do |opt|
-          # Flags must be given a 'true' value, so we overwrite this with
-          # 'nil' since that's what OptionSet expects
-          opt_name, opt_val = opt.to_a[0]
-          if opt_val == true
-            opt_val = nil
+
+        # If opts is a string, invoke Shellwords.split and make it into an
+        # input/output options hash
+        if opts.instance_of? String
+          string_parts = Shellwords.split(opts)
+          raise 'Expected two arguments for options shorthand' \
+            unless string_parts.length == 2
+
+          input, output = string_parts
+          new_task.options = [
+            Option.new('input', input),
+            Option.new('output', output)
+          ]
+        else
+          opts.each do |opt|
+            # Flags must be given a 'true' value, so we overwrite this with
+            # 'nil' since that's what OptionSet expects
+            opt_name, opt_val = opt.to_a[0]
+            if opt_val == true
+              opt_val = nil
+            end
+            new_task.options << Option.new(opt_name, opt_val)
           end
-          new_task.options << Option.new(opt_name, opt_val)
         end
 
         @tasks << new_task
