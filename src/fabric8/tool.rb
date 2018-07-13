@@ -32,6 +32,9 @@ module Fabric8
       end
 
       # Validate options
+      name
+      description
+      version
       option_definitions
     end
 
@@ -60,6 +63,15 @@ module Fabric8
 
     # Gets the version of this tool.
     def version; get_metadata_item('version'); end
+
+    # Gets the IO mode of this tool.
+    def io_mode
+      mode = get_metadata_item('version')
+      raise "Invalid IO mode #{mode}" unless [
+        'none', 'input-only', 'full'
+      ].include?(mode)
+      mode
+    end
 
     # Gets the option definitions for this tool.
     def option_definitions
