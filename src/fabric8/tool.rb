@@ -95,10 +95,8 @@ module Fabric8
         # If not specified, assume not a flag
         this_def.flag = false if this_def.flag.nil?
 
-        # Check defaults are supplied where they need to be
-        if !this_def.flag && this_def.default.nil?
-          raise KeyError, "Option #{name} isn't given a default"
-        elsif this_def.flag && !this_def.default.nil?
+        # Check flags aren't given defaults are supplied where they need to be
+        if this_def.flag && !this_def.default.nil?
           raise KeyError,
             "Flag options cannot have defaults, but #{name} has a default"
         end
