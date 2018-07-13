@@ -113,34 +113,22 @@ $ fb8 --watch
 
 ## What do tools look like?
 
-They're written as Ruby scripts.
+They're written as Ruby scripts, though they also have a YAML metadata file.
 
-Here's an example of that TypeScript tool.
+Here's an example of a simple tool.
+
+```yaml
+name: Example
+description: An example tool.
+version: 1.0.0
+options:
+  text:
+    flag: no
+    default: Foo
+```
 
 ```ruby
-# This function uses a DSL to list dependencies.
-def dependencies
-  npm_package "typescript>=2.0.0"
-  command "typescript" do
-    # Each dependency may have a block which checks whether the dependency is
-    # working properly, in addition to Fabric8's verification.
-    # This enables a consistent build environment.
-    # This would check that 'typescript --version' returned something sensible.
-  end
-end
-
-# This specifies how to build using this tool.
-def build(opts)
-  # 'opts' is an object of arguments and switches.
-  # They would be translated and sanitised to TypeScript's switches here, and
-  # then...
-
-  invoke_command "typescript #{converted_opts}"
-end
-
-# Likewise for watching and running.
-def watch(opts)
-end
-def run(opts)
+build do
+  out :ok, "You said: #{option('text')}"
 end
 ```
