@@ -22,7 +22,7 @@ module Fabric8
       raise ArgumentError, "Can't find a tool named #{tool_name}" unless exists
 
       # Load this tool's metadata
-      # YAML.parse may either throw or return false on invalid YAML
+      # YAML.load_file may either throw or return false on invalid YAML
       begin
         @metadata = YAML.load_file("#{path}/metadata.yaml")
         raise "" unless @metadata
