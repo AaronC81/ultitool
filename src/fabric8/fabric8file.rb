@@ -55,7 +55,6 @@ module Fabric8
       tools = content['tools']
 
       @tasks = []
-      # TODO: 
       tools.each do |tool_name, opts|
         new_task = Task.new(Tool.new(tool_name), [])
 

@@ -41,6 +41,16 @@ module Fabric8
         # Push this option
         @hash[opt.name] = opt.value
       end
+
+      # Check that any options without defaults (and which aren't flags) have
+      # been given a value
+      tool.option_definitions.each do |opt_def|
+        # Skip this one unless it's required and not a flag
+        next unless opt_def.default.nil? && !opt_def.flag
+
+        raise "Required option #{opt_def.name} not given" \
+          if @hash[opt_def.name].nil?
+      end
     end
 
     # Retrieve an option by name, falling back to default if required.
