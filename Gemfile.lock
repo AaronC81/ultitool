@@ -3,21 +3,29 @@ PATH
   specs:
     fabric8 (1.0.0)
       colorize (~> 0.8, >= 0.8)
-      commander (~> 4.4, >= 4.4)
+      octokit (~> 4.0)
 
 GEM
   remote: https://rubygems.org/
   specs:
+    addressable (2.5.2)
+      public_suffix (>= 2.0.2, < 4.0)
     colorize (0.8.1)
-    commander (4.4.5)
-      highline (~> 1.7.2)
-    highline (1.7.10)
+    faraday (0.15.2)
+      multipart-post (>= 1.2, < 3)
+    multipart-post (2.0.0)
+    octokit (4.9.0)
+      sawyer (~> 0.8.0, >= 0.5.3)
+    public_suffix (3.0.2)
+    sawyer (0.8.1)
+      addressable (>= 2.3.5, < 2.6)
+      faraday (~> 0.8, < 1.0)
 
 PLATFORMS
   x64-mingw32
+  x86-mingw32
 
 DEPENDENCIES
-  commander (~> 4.4)
   fabric8!
 
 BUNDLED WITH
