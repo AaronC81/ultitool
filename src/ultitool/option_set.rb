@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Fabric8
+module UltiTool
   # An individual unvalidated option, without a default.
   # Defaults are added by OptionSet. To signal that a default value should be
   # used, #value should be nil.

@@ -2,7 +2,7 @@
 
 require 'colorize'
 
-module Fabric8
+module UltiTool
   # Contains classes for logging to the console.
   class Output
     def initialize(*)

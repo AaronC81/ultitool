@@ -2,37 +2,37 @@
 
 require 'yaml'
 require 'shellwords'
-require 'fabric8/option_set'
+require 'ultitool/option_set'
 
-module Fabric8
+module UltiTool
   # A bundle containing a tool and options for that tool.
   Task = Struct.new('Task', :tool, :options)
 
-  # Represents a Fabric8file.
-  class Fabric8file
+  # Represents a utfile.
+  class UtFile
     attr_reader :content, :tasks
 
-    # Load a new Fabric8file, given a project folder path. Defaults to CWD.
+    # Load a new utfile, given a project folder path. Defaults to CWD.
     def initialize(tool_path = nil)
       tool_path ||= Dir.pwd
 
       # Load the file
       # YAML.load_file may either throw or return false on invalid YAML
       begin
-        # Fabric8file may optionally have a .yaml extension.
+        # utfile may optionally have a .yaml extension.
         # Use a decision table to pick a path
 
-        no_ext_path = "#{tool_path}/Fabric8file"
-        ext_path = "#{tool_path}/Fabric8file.yaml"
+        no_ext_path = "#{tool_path}/utfile"
+        ext_path = "#{tool_path}/utfile.yaml"
         decision_table = [
           [
-            ->{ raise IOError, 'Fabric8file does not exist' },
+            ->{ raise IOError, 'utfile does not exist' },
             ext_path
           ],
           [
             no_ext_path,
             ->{ raise IOError,
-              "Both Fabric8file and Fabric8file.yaml exist;\n" +
+              "Both utfile and utfile.yaml exist;\n" +
               "either is valid, but not both" }
           ]
         ]
@@ -47,7 +47,7 @@ module Fabric8
         raise "" unless @content
       rescue
         raise IOError,
-          "Fabric8file doesn't exist or is not valid YAML"
+          "utfile doesn't exist or is not valid YAML"
       end
 
       # Process all tasks in the YAML file.

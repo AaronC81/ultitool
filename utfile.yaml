@@ -1,4 +1,4 @@
 tools:
   gem:
     - install: yes
-    - input: fabric8.gemspec
+    - input: ultitool.gemspec

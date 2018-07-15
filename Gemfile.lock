@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    fabric8 (1.0.0)
+    ultitool (1.0.0)
       colorize (~> 0.8, >= 0.8)
       octokit (~> 4.0)
 
@@ -26,7 +26,7 @@ PLATFORMS
   x86-mingw32
 
 DEPENDENCIES
-  fabric8!
+  ultitool!
 
 BUNDLED WITH
    1.16.1

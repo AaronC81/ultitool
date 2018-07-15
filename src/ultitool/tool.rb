@@ -1,20 +1,20 @@
 # frozen_string_literal: true
 
 require 'yaml'
-require 'fabric8/option_set'
+require 'ultitool/option_set'
 
-module Fabric8
-  # Represents a Fabric8 tool.
+module UltiTool
+  # Represents an UltiTool tool.
   class Tool
     attr_reader :metadata
 
     # Gets the path to a tool's metadata and scripts, given the tool's name.
     def self.path_for_tool(tool_name)
-      "#{Dir.home}/.fabric8/tools/#{tool_name}"
+      "#{Dir.home}/.ultitool/tools/#{tool_name}"
     end
 
     # Creates an instance of Tool by loading information about the tool from
-    # ~/fabric8/tools.
+    # ~/ultitool/tools.
     def initialize(tool_name)
       # Check a folder for this tool exists
       path = Tool.path_for_tool(tool_name)

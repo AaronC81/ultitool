@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require 'fabric8/output'
-require 'fabric8/tool'
+require 'ultitool/output'
+require 'ultitool/tool'
 
-module Fabric8
+module UltiTool
   # A context in which a tool's script may be #instance_eval'd.
   class ToolDslContext
     attr_reader :build_handler, :option_set

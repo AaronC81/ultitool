@@ -3,7 +3,7 @@
 require 'octokit'
 require 'base64'
 
-module Fabric8
+module UltiTool
   module PackageManager
     # A GitHub repository from which tools may be retrieved using the GitHub
     # REST API v3.

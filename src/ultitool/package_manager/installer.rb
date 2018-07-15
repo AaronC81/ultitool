@@ -2,14 +2,14 @@
 
 require 'octokit'
 
-module Fabric8
+module UltiTool
   module PackageManager
     # Responsible for installing a new tool.
     class Installer
       # Ensures that the environment is configured properly, so that packages
       # are ready to be installed.
       def self.prepare_env
-        dirs = ["#{Dir.home}/.fabric8", "#{Dir.home}/.fabric8/tools"]
+        dirs = ["#{Dir.home}/.ultitool", "#{Dir.home}/.ultitool/tools"]
 
         dirs.each do |dir|
           raise RuntimeError, "#{dir} is a file, but should be a directory" \
@@ -36,7 +36,7 @@ module Fabric8
         listing = @repo.package_contents(@name, @version)
 
         # Create tool directory
-        @target_path = "#{Dir.home}/.fabric8/tools/#{@name}"
+        @target_path = "#{Dir.home}/.ultitool/tools/#{@name}"
         Dir.mkdir(@target_path)
 
         def handle_item(item, rel_path)

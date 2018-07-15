@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-require 'fabric8/output'
-require 'fabric8/tool'
-require 'fabric8/tool_dsl_context'
-require 'fabric8/option_set'
-require 'fabric8/fabric8file'
+require 'ultitool/output'
+require 'ultitool/tool'
+require 'ultitool/tool_dsl_context'
+require 'ultitool/option_set'
+require 'ultitool/utfile'
 
-module Fabric8
-  # The command-line interface for Fabric8.
+module UltiTool
+  # The command-line interface for UltiTool.
   class Cli
     attr_accessor :tasks
 
@@ -16,8 +16,8 @@ module Fabric8
       # Get the tool name, and check it's actually a tool
       tool_name = args.shift
       if tool_name.nil?
-        # Load the Fabric8file
-        @tasks = Fabric8file.new.tasks
+        # Load the utfile
+        @tasks = UtFile.new.tasks
         return
       elsif tool_name.start_with?('-') 
         raise ArgumentError, 'Must specify a tool'
